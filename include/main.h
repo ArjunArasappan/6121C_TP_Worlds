@@ -44,6 +44,7 @@
 #include "usr/drive.hpp"
 #include "usr/misc.hpp"
 #include "usr/intake.hpp"
+#include "usr/flywheel.hpp"
 //#include "pros/api_legacy.h"
 
 /**
@@ -54,9 +55,9 @@
  * concurrently! The okapi namespace will export all symbols inside the pros
  * namespace.
  */
-// using namespace pros;
-// using namespace pros::literals;
-using namespace okapi;
+using namespace pros;
+using namespace pros::literals;
+// using namespace okapi;
 
 extern Controller master;
 

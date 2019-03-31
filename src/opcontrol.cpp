@@ -19,6 +19,8 @@ void opcontrol()
 	{
 		intakeOp();
 		indexerOp();
-		pros::delay(20);
+		flywheelOp();
+
+		delay(20);
 	}
 }

@@ -1,7 +1,7 @@
 #include "main.h"
 
-Motor intakeMotor(PORT_INTAKE, false, AbstractMotor::gearset::green);
-Motor indexerMotor(PORT_INDEXER, false, AbstractMotor::gearset::green);
+Motor intakeMotor(PORT_INTAKE, MOTOR_GEARSET_18, false, MOTOR_ENCODER_DEGREES);
+Motor indexerMotor(PORT_INDEXER, MOTOR_GEARSET_18, false, MOTOR_ENCODER_DEGREES);
 
 void indexerPower(int power)
 {
@@ -11,13 +11,12 @@ void indexerPower(int power)
 void intakeOp()
 {
 
-	pros::lcd::print(1, "%.0f", indexerMotor.getPosition());
-
-	if (master.getDigital(ControllerDigital::R1))
+	if (master.get_digital(DIGITAL_R1))
 	{
+		lcd::print(1, "Hi");
 		intakeMotor.move(127);
 	}
-	else if (master.getDigital(ControllerDigital::R2))
+	else if (master.get_digital(DIGITAL_R2))
 	{
 		intakeMotor.move(-127);
 	}
@@ -29,19 +28,19 @@ void intakeOp()
 
 void indexerOp()
 {
-	if (master.getDigital(ControllerDigital::L1))
+	if (master.get_digital(DIGITAL_L1))
 	{
 		indexerPower(127);
 	}
 
-	else if (master.getDigital(ControllerDigital::L2))
+	else if (master.get_digital(DIGITAL_L2))
 	{
 		indexerPower(-70);
 	}
 
 	else
 	{
-		indexerMotor.moveVelocity(0);
-		indexerMotor.setBrakeMode(AbstractMotor::brakeMode::hold);
+		indexerMotor.move_velocity(0);
+		indexerMotor.set_brake_mode(MOTOR_BRAKE_HOLD);
 	}
 }

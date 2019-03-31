@@ -8,8 +8,9 @@
  */
 void initialize()
 {
-	pros::Task chassis_task(chassisTask);
-	pros::lcd::initialize();
+	Task chassis_task(chassisTask);
+	Task flywheel_task(flywheelTask);
+	lcd::initialize();
 }
 
 /**
