@@ -8,39 +8,51 @@ void indexerPower(int power)
 	indexerMotor.move(power);
 }
 
-void intakeOp()
+void intakeOp(void *parameter)
 {
-
-	if (master.get_digital(DIGITAL_R1))
+	while (true)
 	{
-		lcd::print(1, "Hi");
-		intakeMotor.move(127);
-	}
-	else if (master.get_digital(DIGITAL_R2))
-	{
-		intakeMotor.move(-127);
-	}
-	else
-	{
-		intakeMotor.move(0);
+		if (!competition::is_autonomous())
+		{
+			if (master.get_digital(DIGITAL_R1))
+			{
+				intakeMotor.move(127);
+			}
+			else if (master.get_digital(DIGITAL_R2))
+			{
+				intakeMotor.move(-127);
+			}
+			else
+			{
+				intakeMotor.move(0);
+			}
+		}
+		delay(20);
 	}
 }
 
-void indexerOp()
+void indexerOp(void*paramter)
 {
-	if (master.get_digital(DIGITAL_L1))
+	while (true)
 	{
-		indexerPower(127);
-	}
+		if (!competition::is_autonomous())
+		{
+			if (master.get_digital(DIGITAL_L1))
+			{
+				indexerPower(127);
+			}
 
-	else if (master.get_digital(DIGITAL_L2))
-	{
-		indexerPower(-70);
-	}
+			else if (master.get_digital(DIGITAL_L2))
+			{
+				indexerPower(-70);
+			}
 
-	else
-	{
-		indexerMotor.move_velocity(0);
-		indexerMotor.set_brake_mode(MOTOR_BRAKE_HOLD);
+			else
+			{
+				indexerMotor.move_velocity(0);
+				indexerMotor.set_brake_mode(MOTOR_BRAKE_HOLD);
+			}
+		}
+		delay(20);
 	}
 }

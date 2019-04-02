@@ -34,6 +34,7 @@ void chassisTask(void *parameter)
 	{
 		if (!competition::is_autonomous())
 		{
+
 			_chassisArcade();
 		}
 		delay(20);

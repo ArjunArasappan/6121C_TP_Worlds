@@ -10,6 +10,9 @@ void initialize()
 {
 	Task chassis_task(chassisTask);
 	Task flywheel_task(flywheelTask);
+	Task flywheel_op(flywheelOp);
+	Task intake_op(intakeOp);
+	Task indexer_op(indexerOp);
 	lcd::initialize();
 }
 

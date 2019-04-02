@@ -2,6 +2,6 @@
 #define _FLYWHEEL_HPP_
 
 void flywheelTask(void *);
-void flywheelOp();
+void flywheelOp(void *);
 
 #endif

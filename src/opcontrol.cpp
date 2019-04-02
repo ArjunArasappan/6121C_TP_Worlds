@@ -17,10 +17,6 @@ void opcontrol()
 {
 	while (true)
 	{
-		intakeOp();
-		indexerOp();
-		flywheelOp();
-
 		delay(20);
 	}
 }

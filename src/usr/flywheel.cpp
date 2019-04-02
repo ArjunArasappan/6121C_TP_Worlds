@@ -2,7 +2,7 @@
 
 Motor flywheelMotor(PORT_FLYWHEEL, E_MOTOR_GEARSET_06, false);
 
-const float flywheelGain = 0.008;
+const float flywheelGain = 0.0075;
 
 static float flywheelCurrentVelocity;
 static float flywheelError;
@@ -16,7 +16,7 @@ bool flywheelEnabled = false;
 static int flywheelSlewSpeed = 0;
 
 int flywheelAccelStep = 4;
-int flywheelDeccelStep = 200;
+int flywheelDeccelStep = 256;
 
 void _flywheelSlew(int target)
 {
@@ -37,24 +37,32 @@ void _flywheelSlew(int target)
 	flywheelMotor.move(flywheelSlewSpeed);
 }
 
-void flywheelOp()
+void flywheelOp(void *parameter)
 {
-	lcd::print(1, "%.0f", flywheelMotor.get_actual_velocity());
-	if (master.get_digital(DIGITAL_X))
+	while (true)
 	{
-		flywheelEnabled = true;
-		flywheelTargetVelocity = 600;
-	}
-	else if (master.get_digital(DIGITAL_A))
-	{
-		flywheelEnabled = true;
-		flywheelTargetVelocity = 400;
-	}
+		if (!competition::is_autonomous())
+		{
+			// lcd::print(1, "Error: %.0f Draw: %d", flywheelError, flywheelMotor.get_current_draw());
+			if (master.get_digital(DIGITAL_X))
+			{
+				flywheelEnabled = true;
+				flywheelTargetVelocity = 530;
+			}
+			else if (master.get_digital(DIGITAL_A))
+			{
+				flywheelEnabled = true;
+				flywheelTargetVelocity = 300; //580
+			}
 
-	else if (master.get_digital(DIGITAL_B))
+			else if (master.get_digital(DIGITAL_B))
 
-	{
-		flywheelEnabled = false;
+			{
+				flywheelEnabled = false;
+				flywheelSlewSpeed = 0;
+			}
+		}
+		delay(20);
 	}
 }
 
