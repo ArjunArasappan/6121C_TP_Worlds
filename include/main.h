@@ -45,6 +45,7 @@
 #include "usr/misc.hpp"
 #include "usr/intake.hpp"
 #include "usr/flywheel.hpp"
+#include "usr/adjuster.hpp"
 //#include "pros/api_legacy.h"
 
 /**

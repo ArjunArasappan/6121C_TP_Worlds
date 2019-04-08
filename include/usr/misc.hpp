@@ -9,7 +9,7 @@
 
 #define PORT_FLYWHEEL 13
 
-#define PORT_ADJUSTER 0
+#define PORT_ADJUSTER 16
 
 #define PORT_INTAKE 15
 #define PORT_INDEXER 17
