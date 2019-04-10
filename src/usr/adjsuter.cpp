@@ -4,35 +4,37 @@ Motor adjusterMotor(PORT_ADJUSTER, E_MOTOR_GEARSET_18, true);
 
 void doubleShot()
 {
-
+	setChassisLock(true);
+	adjusterMotor.tare_position();
 	indexerIn();
 	intakeIn();
-	delay(100);
+	delay(95);
 	adjusterUp();
-	delay(500);
-	adjusterDown();
+	delay(300);
+	adjusterMotor.move_absolute(0, 200);
 	delay(60);
 	intakeWholeStop();
 	adjusterMotor.move_velocity(0);
+	setChassisLock(false);
 }
 
 void backDoubleShot()
 {
-
+	setChassisLock(true);
 	indexerIn();
 	intakeIn();
-	delay(100);
+	delay(160);
 	intakeWholeStop();
-
-	waitForFlywheelSettle();
 	adjusterUp();
+	delay(1500);
 	indexerIn();
 	intakeIn();
-	delay(300);
+	delay(200);
 	adjusterDown();
 	delay(300);
 	intakeWholeStop();
 	adjusterMotor.move_velocity(0);
+	setChassisLock(false);
 }
 
 void adjusterUp()

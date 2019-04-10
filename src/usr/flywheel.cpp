@@ -4,7 +4,7 @@ Motor flywheelMotor(PORT_FLYWHEEL, E_MOTOR_GEARSET_06, false);
 
 const float flywheelGain = 0.01;
 
-const int FLYWHEEL_HIGH = 560; //547
+const int FLYWHEEL_HIGH = 595; //560
 
 bool flywheelEnabled = false;
 
