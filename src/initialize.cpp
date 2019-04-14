@@ -12,8 +12,7 @@ void initialize()
 	Task flywheel_task(flywheelTask);
 	Task flywheel_op(flywheelOp);
 	Task intake_op(intakeOp);
-	// Task indexer_op(indexerOp);
-	Task adjuster_op(adjusterOp);
+
 	lcd::initialize();
 }
 

@@ -4,9 +4,12 @@ Motor flywheelMotor(PORT_FLYWHEEL, E_MOTOR_GEARSET_06, false);
 
 const float flywheelGain = 0.01;
 
-const int FLYWHEEL_HIGH = 595; //560
+const int FLYWHEEL_HIGH = 595;
+const int FLYWHEEL_BACK_MID = 547;
 
 bool flywheelEnabled = false;
+
+bool flywheelBackMid = false;
 
 static int flywheelSlewSpeed = 0;
 
@@ -151,26 +154,34 @@ void flywheelOp(void *parameter)
 {
 	while (true)
 	{
-		printf("%.0f %.0f %d\n\n", flywheelMotor.get_actual_velocity(), flywheelMotor.get_power(), flywheel.motor_drive);
+
 		if (!competition::is_autonomous())
 		{
 
 			if (master.get_digital(DIGITAL_X))
 			{
 				flywheelEnabled = true;
+				flywheelBackMid = false;
 				FwVelocitySet(&flywheel, FLYWHEEL_HIGH);
 			}
 			else if (master.get_digital(DIGITAL_A))
 			{
 				flywheelEnabled = true;
-				FwVelocitySet(&flywheel, 600);
+				flywheelBackMid = false;
+				FwVelocitySet(&flywheel, FLYWHEEL_BACK_MID);
 			}
 
 			else if (master.get_digital(DIGITAL_B))
-
 			{
+				flywheelBackMid = false;
 				flywheelEnabled = false;
 				flywheelSlewSpeed = 0;
+			}
+
+			else if (flywheelBackMid)
+			{
+				flywheelEnabled = true;
+				FwVelocitySet(&flywheel, FLYWHEEL_BACK_MID);
 			}
 		}
 		delay(20);
@@ -190,6 +201,7 @@ void flywheelTask(void *parameter)
 	fw->v_time = millis();
 	while (true)
 	{
+
 		if (flywheelEnabled)
 		{ // debug counter
 			fw->counter++;
@@ -218,10 +230,21 @@ void flywheelTask(void *parameter)
 	}
 }
 
-void waitForFlywheelSettle()
+void setFlywheelBackMid()
 {
-	while (sgn(flywheel.error) == sgn(flywheel.last_error))
+	flywheelBackMid = true;
+}
+
+void backWaitForFlywheelSettle()
+{
+	int counter = 0;
+	while (true)
 	{
 		delay(20);
+		counter += 20;
+		if ((counter > 2000) || flywheelMotor.get_actual_velocity() > FLYWHEEL_BACK_MID)
+		{
+			break;
+		}
 	}
 }

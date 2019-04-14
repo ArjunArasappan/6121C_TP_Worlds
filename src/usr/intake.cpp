@@ -3,7 +3,7 @@
 Motor intakeMotor(PORT_INTAKE, MOTOR_GEARSET_18, false, MOTOR_ENCODER_DEGREES);
 Motor indexerMotor(PORT_INDEXER, MOTOR_GEARSET_18, false, MOTOR_ENCODER_DEGREES);
 
-const int RAKE_DOWN = -240;
+const int RAKE_DOWN = -355;
 
 bool rakeDown = false;
 
@@ -57,7 +57,7 @@ void intakeOp(void *parameter)
 	{
 		if (!competition::is_autonomous())
 		{
-			lcd::print(1, "%.0f", indexerMotor.get_position());
+			// lcd::print(1, "%.0f", indexerMotor.get_position());
 			//FRONT INTAKE and ADJUSTER
 			if (master.get_digital(DIGITAL_R1))
 			{
@@ -82,9 +82,15 @@ void intakeOp(void *parameter)
 				adjusterDown();
 			}
 
+			else if (master.get_digital(DIGITAL_Y))
+			{
+				adjusterUp();
+			}
+
 			else
 			{
 				intakeMotor.move(0);
+				// intakeIn();
 				adjusterStop();
 			}
 			//INDEXER
@@ -111,7 +117,7 @@ void intakeOp(void *parameter)
 				indexerMotor.tare_position();
 				while (indexerMotor.get_position() > RAKE_DOWN)
 				{
-					_indexerSlew(-127);
+					_indexerSlew(-80);
 					pros::delay(20);
 				}
 				rakeDown = true;
@@ -124,56 +130,9 @@ void intakeOp(void *parameter)
 				indexerMotor.move_velocity(0);
 				indexerSlewSpeed = 0;
 				indexerMotor.set_brake_mode(MOTOR_BRAKE_HOLD);
+				// indexerIn();
 			}
 		}
 		delay(20);
 	}
 }
-
-// void indexerOp(void *paramter)
-// {
-// 	while (true)
-// 	{
-// 		if (!competition::is_autonomous())
-// 		{
-// 			if (master.get_digital(DIGITAL_L1))
-// 			{
-// 				if (rakeDown)
-// 				{
-// 					indexerMotor.tare_position();
-// 					while (indexerMotor.get_position() < -RAKE_DOWN)
-// 					{
-// 						indexerPower(127);
-// 						pros::delay(20);
-// 					}
-// 					rakeDown = false;
-// 				}
-// 				else
-// 				{
-// 					indexerPower(127);
-// 				}
-// 			}
-
-// 			else if (master.get_digital(DIGITAL_RIGHT))
-// 			{
-// 				indexerMotor.tare_position();
-// 				while (indexerMotor.get_position() > RAKE_DOWN)
-// 				{
-// 					_indexerSlew(-127);
-// 					pros::delay(20);
-// 				}
-// 				rakeDown = true;
-// 				indexerMotor.move_velocity(0);
-// 			}
-
-// 			else
-// 			{
-
-// 				indexerMotor.move_velocity(0);
-// 				indexerSlewSpeed = 0;
-// 				indexerMotor.set_brake_mode(MOTOR_BRAKE_HOLD);
-// 			}
-// 		}
-// 		delay(20);
-// 	}
-// }
