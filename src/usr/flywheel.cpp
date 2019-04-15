@@ -235,6 +235,13 @@ void setFlywheelBackMid()
 	flywheelBackMid = true;
 }
 
+void setFlywheelHigh()
+{
+	flywheelEnabled = true;
+	flywheelBackMid = false;
+	FwVelocitySet(&flywheel, FLYWHEEL_HIGH);
+}
+
 void backWaitForFlywheelSettle()
 {
 	int counter = 0;

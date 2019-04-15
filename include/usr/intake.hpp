@@ -7,4 +7,7 @@ void indexerIn();
 void intakeIn();
 void intakeWholeStop();
 
+void moveRakeDown();
+void moveRakeUp();
+
 #endif

@@ -3,7 +3,7 @@
 Motor intakeMotor(PORT_INTAKE, MOTOR_GEARSET_18, false, MOTOR_ENCODER_DEGREES);
 Motor indexerMotor(PORT_INDEXER, MOTOR_GEARSET_18, false, MOTOR_ENCODER_DEGREES);
 
-const int RAKE_DOWN = -355;
+const int RAKE_DOWN = -190;
 
 bool rakeDown = false;
 
@@ -47,6 +47,29 @@ void intakeWholeStop()
 	intakeMotor.move(0);
 }
 
+void moveRakeDown()
+{
+	indexerMotor.tare_position();
+	while (indexerMotor.get_position() > RAKE_DOWN)
+	{
+		indexerPower(-127);
+		pros::delay(20);
+	}
+	rakeDown = true;
+	indexerMotor.move_velocity(0);
+}
+
+void moveRakeUp()
+{
+	indexerMotor.tare_position();
+	while (indexerMotor.get_position() < -RAKE_DOWN + 500)
+	{
+		indexerPower(127);
+		pros::delay(20);
+	}
+	rakeDown = false;
+}
+
 void intakeIn()
 {
 	intakeMotor.move_velocity(200);
@@ -57,7 +80,7 @@ void intakeOp(void *parameter)
 	{
 		if (!competition::is_autonomous())
 		{
-			// lcd::print(1, "%.0f", indexerMotor.get_position());
+			lcd::print(3, "%.0f", indexerMotor.get_position());
 			//FRONT INTAKE and ADJUSTER
 			if (master.get_digital(DIGITAL_R1))
 			{
@@ -98,13 +121,7 @@ void intakeOp(void *parameter)
 			{
 				if (rakeDown)
 				{
-					indexerMotor.tare_position();
-					while (indexerMotor.get_position() < -RAKE_DOWN + 100)
-					{
-						indexerPower(127);
-						pros::delay(20);
-					}
-					rakeDown = false;
+					moveRakeUp();
 				}
 				else
 				{
@@ -114,22 +131,21 @@ void intakeOp(void *parameter)
 
 			else if (master.get_digital(DIGITAL_RIGHT))
 			{
-				indexerMotor.tare_position();
-				while (indexerMotor.get_position() > RAKE_DOWN)
-				{
-					_indexerSlew(-80);
-					pros::delay(20);
-				}
-				rakeDown = true;
-				indexerMotor.move_velocity(0);
+				moveRakeDown();
 			}
 
 			else
 			{
-
-				indexerMotor.move_velocity(0);
-				indexerSlewSpeed = 0;
-				indexerMotor.set_brake_mode(MOTOR_BRAKE_HOLD);
+				if (rakeDown)
+				{
+					indexerMotor.move(-30);
+				}
+				else
+				{
+					indexerMotor.move_velocity(0);
+					indexerSlewSpeed = 0;
+					indexerMotor.set_brake_mode(MOTOR_BRAKE_HOLD);
+				}
 				// indexerIn();
 			}
 		}

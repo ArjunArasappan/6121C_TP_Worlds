@@ -18,18 +18,21 @@ int sgn(T val)
 
 bool chassisLock = false;
 
-const double CHASSIS_DISTANCE_KP = .4; //.4
+const double CHASSIS_DISTANCE_KP = .5; //.4 //.4
 const double CHASSIS_DISTANCE_KI = 0;
-const double CHASSIS_DISTANCE_KD = 3; //3
+const double CHASSIS_DISTANCE_KD = 2; //3 //2.5
 
-const int TURN_MAX_SPEED = 200;
-const int TURN_ERROR_MIN = 10;
+const int TURN_MAX_SPEED = 70;
+const int TURN_ERROR_MIN = 5;
+
+const int CHASSIS_MAX_SPEED = 127;
+const double CHASSIS_DRIVE_ERROR_MIN = 28;
 
 static int errorMax = 0;
 
-const double CHASSIS_TURN_KP = .6; //1  .8
+const double CHASSIS_TURN_KP = .9;
 const double CHASSIS_TURN_KI = 0.00001;
-const double CHASSIS_TURN_KD = 0; //2 2
+const double CHASSIS_TURN_KD = 3;
 
 static double P = 0;
 static double I = 0;
@@ -41,11 +44,6 @@ const int IS_DRIVING_LIMIT = 2;
 const double CHASSIS_SLANT_KP = 3.5; //2.5
 const double CHASSIS_SLANT_KD = 1;
 
-const double CHASSIS_DRIVE_ERROR_MIN = 28;
-
-static double leftTarget = 0;
-static double rightTarget = 0;
-
 static bool isTurning = false;
 
 static double difference = 0;
@@ -56,13 +54,14 @@ static int rightSpeed = 0;
 const int CHASSIS_ACCEL_STEP = 4;
 const int CHASSIS_DECEL_STEP = 256; //no decel slew
 
-const int CHASSIS_MAX_SPEED = 127;
-
 const int CHASSIS_INTEGRAL_ERROR_BOUND = 300;
 const double CHASSIS_INTEGRAL_CAP = 0 / CHASSIS_DISTANCE_KI;
 
 const double WHEEL_DIAMETER = 4.125;
-const double WHEELBASE_WIDTH = 10.75;
+const double WHEELBASE_WIDTH = 10.85;
+
+static double leftTarget = 0;
+static double rightTarget = 0;
 
 double leftPos = 0;
 double leftError = 0;
@@ -78,10 +77,30 @@ double rightDerivative = 0;
 double rightIntegral = 0;
 double rightPower = 0;
 
+double turnPos = 0;
+double turnError = 0;
+double turnPrevError = 0;
+double turnDerivative = 0;
+double turnPower = 0;
+double turnTarget = 0;
+
 static double slantDifference = 0;
 double slantModifier = 0;
 double lastSlantDifference = 0;
 double slantDerivative = 0;
+
+void _chassisLock()
+{
+	leftFront.move_velocity(0);
+	leftBack.move_velocity(0);
+	rightFront.move_velocity(0);
+	rightBack.move_velocity(0);
+
+	leftFront.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+	leftBack.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+	rightFront.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+	rightBack.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+}
 
 void chassisInit()
 {
@@ -194,21 +213,19 @@ void _rightSlew(double rightTarget)
 
 bool _isLeftDriving()
 {
-	if (isTurning)
-	{
-		return (fabs(leftError) > TURN_ERROR_MIN);
-	}
+
 	return (fabs(leftError) > CHASSIS_DRIVE_ERROR_MIN);
 }
 
 bool _isRightDriving()
 {
-	if (isTurning)
-	{
-		return (fabs(rightError) > TURN_ERROR_MIN);
-	}
 
 	return (fabs(rightError) > CHASSIS_DRIVE_ERROR_MIN);
+}
+
+bool _isTurning()
+{
+	return (fabs(turnError) > TURN_ERROR_MIN);
 }
 
 void leftWaitUntilSettled()
@@ -219,7 +236,7 @@ void leftWaitUntilSettled()
 	{
 		delay(20);
 	}
-	pros::delay(250 + 400 * isTurning);
+	pros::delay(250);
 }
 
 void rightWaitUntilSettled()
@@ -229,13 +246,31 @@ void rightWaitUntilSettled()
 	{
 		delay(20);
 	}
-	pros::delay(250 + 400 * isTurning);
+	pros::delay(250);
+}
+
+void turnWaitUntilSettled()
+{
+	delay(300);
+	while (_isTurning())
+	{
+		delay(20);
+	}
+	pros::delay(500);
 }
 
 void chassisWaitUntilSettled()
 {
-	leftWaitUntilSettled();
-	rightWaitUntilSettled();
+	if (isTurning)
+	{
+		turnWaitUntilSettled();
+	}
+	else
+	{
+
+		leftWaitUntilSettled();
+		rightWaitUntilSettled();
+	}
 }
 
 double inchesToTicks(double inches)
@@ -259,31 +294,19 @@ void setChassisLock(bool lock)
 void leftMoveAsync(double iTarget)
 {
 	_leftReset();
-
-	double target = iTarget;
-	if (!isTurning)
-	{
-		target = inchesToTicks(iTarget);
-	}
-	leftTarget = target;
+	leftTarget = inchesToTicks(iTarget);
 }
 
 void leftMove(double iTarget)
 {
 	leftMoveAsync(iTarget);
-
 	leftWaitUntilSettled();
 }
 
 void rightMoveAsync(double iTarget)
 {
 	_rightReset();
-	double target = iTarget;
-	if (!isTurning)
-	{
-		target = inchesToTicks(iTarget);
-	}
-	rightTarget = target;
+	rightTarget = inchesToTicks(iTarget);
 }
 
 void rightMove(double iTarget)
@@ -335,15 +358,16 @@ void moveBackward(double distance_inches)
 
 void turnAsync(double degrees)
 {
+	_leftReset();
+	_rightReset();
+	turnTarget = degreesToTicks(degrees);
 	isTurning = true;
-	leftMoveAsync(degreesToTicks(degrees));
-	rightMoveAsync(-degreesToTicks(degrees));
 }
 
 void turn(double degrees)
 {
 	turnAsync(degrees);
-	rightWaitUntilSettled();
+	chassisWaitUntilSettled();
 }
 
 void _chassisArcade()
@@ -357,19 +381,6 @@ void _chassisArcade()
 	_right(rightPower);
 }
 
-void _chassisLock()
-{
-	leftFront.move_velocity(0);
-	leftBack.move_velocity(0);
-	rightFront.move_velocity(0);
-	rightBack.move_velocity(0);
-
-	leftFront.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-	leftBack.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-	rightFront.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-	rightBack.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-}
-
 void chassisTask(void *parameter)
 {
 	_leftReset();
@@ -379,18 +390,20 @@ void chassisTask(void *parameter)
 		if (!competition::is_autonomous())
 		{
 
-			if (chassisLock)
+			_chassisArcade();
+
+			if (master.get_digital(DIGITAL_DOWN))
 			{
 				// _chassisLock();
 			}
 			else
 			{
-				_chassisArcade();
-			}
 
-			if (master.get_digital(DIGITAL_DOWN))
-			{
-				// _chassisLock();
+				_chassisArcade();
+				// leftFront.set_brake_mode(E_MOTOR_BRAKE_COAST);
+				// leftBack.set_brake_mode(E_MOTOR_BRAKE_COAST);
+				// rightFront.set_brake_mode(E_MOTOR_BRAKE_COAST);
+				// rightBack.set_brake_mode(E_MOTOR_BRAKE_COAST);
 			}
 		}
 		else
@@ -401,118 +414,140 @@ void chassisTask(void *parameter)
 				P = CHASSIS_TURN_KP;
 				I = CHASSIS_TURN_KI;
 				D = CHASSIS_TURN_KD;
+
+				turnPos = (_getLeftPos() - _getRightPos()) / 2;
+				turnError = turnTarget - turnPos;
+				turnDerivative = turnError - turnPrevError;
+				turnPrevError = turnError;
+				turnPower = turnError * CHASSIS_TURN_KP + turnDerivative * CHASSIS_TURN_KD;
+
+				if (turnPower > TURN_MAX_SPEED)
+				{
+					turnPower = TURN_MAX_SPEED;
+				}
+				else if (turnPower < -TURN_MAX_SPEED)
+				{
+					turnPower = -TURN_MAX_SPEED;
+				}
+
+				// if (fabs(turnError) > 100)
+				// {
+				// 	_leftSlew(sgn(turnError) * TURN_MAX_SPEED);
+				// 	_rightSlew(-sgn(turnError) * TURN_MAX_SPEED);
+				// }
+				// else
+				// {
+				_leftSlew(turnPower);
+				_rightSlew(-turnPower);
+				// }
+
+				lcd::print(1, "%.2f %.2f %.2f %s", turnPos, turnError, turnPower, strerror(errno));
 			}
 			else
 			{
 				P = CHASSIS_DISTANCE_KP;
 				I = CHASSIS_DISTANCE_KI;
 				D = CHASSIS_DISTANCE_KD;
-			}
 
-			//LEFT CALCULATIONS
-			leftPos = _getLeftPos();
-			leftError = leftTarget - leftPos;
-			leftDerivative = leftError - leftPrevError;
-			leftPrevError = leftError;
+				//LEFT CALCULATIONS
+				leftPos = _getLeftPos();
+				leftError = leftTarget - leftPos;
+				leftDerivative = leftError - leftPrevError;
+				leftPrevError = leftError;
 
-			if (abs(leftError) < CHASSIS_INTEGRAL_ERROR_BOUND || abs(leftError) > 20)
-			{
-				leftIntegral += leftError;
-			}
-			else
-			{
-				leftIntegral = 0;
-			}
+				if (abs(leftError) < CHASSIS_INTEGRAL_ERROR_BOUND || abs(leftError) > 20)
+				{
+					leftIntegral += leftError;
+				}
+				else
+				{
+					leftIntegral = 0;
+				}
 
-			if (leftIntegral > CHASSIS_INTEGRAL_CAP)
-			{
-				leftIntegral = CHASSIS_INTEGRAL_CAP;
-			}
-			else if (leftIntegral < -CHASSIS_INTEGRAL_CAP)
-			{
-				leftIntegral = -CHASSIS_INTEGRAL_CAP;
-			}
+				if (leftIntegral > CHASSIS_INTEGRAL_CAP)
+				{
+					leftIntegral = CHASSIS_INTEGRAL_CAP;
+				}
+				else if (leftIntegral < -CHASSIS_INTEGRAL_CAP)
+				{
+					leftIntegral = -CHASSIS_INTEGRAL_CAP;
+				}
 
-			leftIntegral *= sgn(leftError);
+				leftIntegral *= sgn(leftError);
 
-			leftPower = leftError * P + leftIntegral * I + leftDerivative * D;
+				leftPower = leftError * P + leftIntegral * I + leftDerivative * D;
 
-			if (leftPower > 127)
-			{
-				leftPower = 127;
-			}
-			else if (leftPower < -127)
-			{
-				leftPower = -127;
-			}
+				if (leftPower > 127)
+				{
+					leftPower = 127;
+				}
+				else if (leftPower < -127)
+				{
+					leftPower = -127;
+				}
 
-			//RIGHT CALCULATIONS
-			rightPos = _getRightPos();
-			rightError = rightTarget - rightPos;
-			rightDerivative = rightError - rightPrevError;
-			rightPrevError = rightError;
+				//RIGHT CALCULATIONS
+				rightPos = _getRightPos();
+				rightError = rightTarget - rightPos;
+				rightDerivative = rightError - rightPrevError;
+				rightPrevError = rightError;
 
-			if (abs(rightError) < CHASSIS_INTEGRAL_ERROR_BOUND || abs(rightError) > 20)
-			{
-				rightIntegral += rightError;
-			}
-			else
-			{
-				rightIntegral = 0;
-			}
+				if (abs(rightError) < CHASSIS_INTEGRAL_ERROR_BOUND || abs(rightError) > 20)
+				{
+					rightIntegral += rightError;
+				}
+				else
+				{
+					rightIntegral = 0;
+				}
 
-			if (rightIntegral > CHASSIS_INTEGRAL_CAP)
-			{
-				rightIntegral = CHASSIS_INTEGRAL_CAP;
-			}
-			else if (rightIntegral < -CHASSIS_INTEGRAL_CAP)
-			{
-				rightIntegral = -CHASSIS_INTEGRAL_CAP;
-			}
+				if (rightIntegral > CHASSIS_INTEGRAL_CAP)
+				{
+					rightIntegral = CHASSIS_INTEGRAL_CAP;
+				}
+				else if (rightIntegral < -CHASSIS_INTEGRAL_CAP)
+				{
+					rightIntegral = -CHASSIS_INTEGRAL_CAP;
+				}
 
-			rightIntegral *= sgn(rightError);
+				rightIntegral *= sgn(rightError);
 
-			rightPower = rightError * P + rightIntegral * I + rightDerivative * D;
+				rightPower = rightError * P + rightIntegral * I + rightDerivative * D;
 
-			if (rightPower > 127)
-			{
-				rightPower = 127;
-			}
-			else if (rightPower < -127)
-			{
-				rightPower = -127;
-			}
+				if (rightPower > 127)
+				{
+					rightPower = 127;
+				}
+				else if (rightPower < -127)
+				{
+					rightPower = -127;
+				}
 
-			//OUTPUT
-
-			if (isTurning)
-			{
-				if (rightPower > TURN_MAX_SPEED)
-					rightPower = TURN_MAX_SPEED;
-				else if (rightPower < -TURN_MAX_SPEED)
-					rightPower = -TURN_MAX_SPEED;
-
-				_leftSlew(-rightPower);
-				_rightSlew(rightPower);
-			}
-
-			//SLANT
-			else
-			{
-				slantDifference = leftPos - rightPos;
+				//SLANT
+				slantDifference = fabs(leftPos) - fabs(rightPos);
 				slantDerivative = slantDifference - lastSlantDifference;
 				slantDifference = lastSlantDifference;
 				slantModifier = slantDifference * CHASSIS_SLANT_KP + slantDerivative * CHASSIS_SLANT_KD;
+				if ((leftError + rightError) / 2 > 0)
+				{
+					leftPower -= slantModifier;
+					rightPower += slantModifier;
+				}
+				else
+				{
+					leftPower += slantModifier;
+					rightPower -= slantModifier;
+				}
 
-				leftPower -= slantModifier;
-				rightPower += slantModifier;
+				//OUTPUT
 
 				_leftSlew(leftPower);
 				_rightSlew(rightPower);
+
+				lcd::print(5, "%.0f %.0f %.0f %.0f", leftError, rightError, leftPos, rightPos);
 			}
-			// lcd::print(1, "%.2f %.2f %s", rightPower, rightError, strerror(errno));
 		}
-		lcd::print(1, "%.0f %.0f %.0f %.0f", leftFront.get_actual_velocity(), leftBack.get_actual_velocity(), rightFront.get_actual_velocity(), rightBack.get_actual_velocity());
+		// lcd::print(1, "%.0f %.0f %.0f %.0f", leftFront.get_actual_velocity(), leftBack.get_actual_velocity(), rightFront.get_actual_velocity(), rightBack.get_actual_velocity());
 		delay(20);
 	}
 }
