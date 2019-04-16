@@ -18,15 +18,17 @@ int sgn(T val)
 
 bool chassisLock = false;
 
-const double CHASSIS_DISTANCE_KP = .5; //.4 //.4
-const double CHASSIS_DISTANCE_KI = 0;
-const double CHASSIS_DISTANCE_KD = 2; //3 //2.5
+bool movingIndividually = false;
 
-const int TURN_MAX_SPEED = 70;
+const double CHASSIS_DISTANCE_KP = .4; //.4 //.4
+const double CHASSIS_DISTANCE_KI = 0;
+const double CHASSIS_DISTANCE_KD = 1.25; //3 //2.5
+
+const int TURN_MAX_SPEED = 70; //70
 const int TURN_ERROR_MIN = 5;
 
-const int CHASSIS_MAX_SPEED = 127;
-const double CHASSIS_DRIVE_ERROR_MIN = 28;
+int CHASSIS_MAX_SPEED = 127;
+const double CHASSIS_DRIVE_ERROR_MIN = 40; //28
 
 static int errorMax = 0;
 
@@ -37,9 +39,6 @@ const double CHASSIS_TURN_KD = 3;
 static double P = 0;
 static double I = 0;
 static double D = 0;
-
-const int MOVING_THRESH = 10;
-const int IS_DRIVING_LIMIT = 2;
 
 const double CHASSIS_SLANT_KP = 3.5; //2.5
 const double CHASSIS_SLANT_KD = 1;
@@ -88,6 +87,11 @@ static double slantDifference = 0;
 double slantModifier = 0;
 double lastSlantDifference = 0;
 double slantDerivative = 0;
+
+void setChassisMaxSpeed(double speed)
+{
+	CHASSIS_MAX_SPEED = speed;
+}
 
 void _chassisLock()
 {
@@ -232,8 +236,12 @@ void leftWaitUntilSettled()
 {
 
 	delay(300);
+	int counter = 0;
 	while (_isLeftDriving())
 	{
+		if (counter > 6000)
+			break;
+		counter += 20;
 		delay(20);
 	}
 	pros::delay(250);
@@ -242,8 +250,12 @@ void leftWaitUntilSettled()
 void rightWaitUntilSettled()
 {
 	delay(300);
+	int counter = 0;
 	while (_isRightDriving())
 	{
+		if (counter > 6000)
+			break;
+		counter += 20;
 		delay(20);
 	}
 	pros::delay(250);
@@ -252,8 +264,12 @@ void rightWaitUntilSettled()
 void turnWaitUntilSettled()
 {
 	delay(300);
+	int counter;
 	while (_isTurning())
 	{
+		if (counter > 2000)
+			break;
+		counter += 20;
 		delay(20);
 	}
 	pros::delay(500);
@@ -317,6 +333,7 @@ void rightMove(double iTarget)
 
 void moveForwardAsync(double distance_inches)
 {
+	movingIndividually = false;
 	isTurning = false;
 	leftMoveAsync(distance_inches);
 	rightMoveAsync(distance_inches);
@@ -324,18 +341,26 @@ void moveForwardAsync(double distance_inches)
 
 void rightMoveIndividualAsync(double distance_inches)
 {
+	movingIndividually = true;
+	rightMoveAsync(distance_inches);
 }
 
 void rightMoveIndividual(double distance_inches)
 {
+	movingIndividually = true;
+	rightMove(distance_inches);
 }
 
 void leftMoveIndividualAsync(double distance_inches)
 {
+	movingIndividually = true;
+	leftMoveAsync(distance_inches);
 }
 
 void leftMoveIndividual(double distance_inches)
 {
+	movingIndividually = true;
+	leftMove(distance_inches);
 }
 
 void moveForward(double distance_inches)
@@ -358,6 +383,7 @@ void moveBackward(double distance_inches)
 
 void turnAsync(double degrees)
 {
+	movingIndividually = false;
 	_leftReset();
 	_rightReset();
 	turnTarget = degreesToTicks(degrees);
@@ -411,9 +437,6 @@ void chassisTask(void *parameter)
 
 			if (isTurning)
 			{
-				P = CHASSIS_TURN_KP;
-				I = CHASSIS_TURN_KI;
-				D = CHASSIS_TURN_KD;
 
 				turnPos = (_getLeftPos() - _getRightPos()) / 2;
 				turnError = turnTarget - turnPos;
@@ -430,25 +453,33 @@ void chassisTask(void *parameter)
 					turnPower = -TURN_MAX_SPEED;
 				}
 
-				// if (fabs(turnError) > 100)
-				// {
-				// 	_leftSlew(sgn(turnError) * TURN_MAX_SPEED);
-				// 	_rightSlew(-sgn(turnError) * TURN_MAX_SPEED);
-				// }
-				// else
-				// {
-				_leftSlew(turnPower);
-				_rightSlew(-turnPower);
-				// }
+				if (fabs(turnError) > 150)
+				{
+					_leftSlew(sgn(turnError) * TURN_MAX_SPEED);
+					_rightSlew(-sgn(turnError) * TURN_MAX_SPEED);
+				}
+				else
+				{
+					_leftSlew(turnPower);
+					_rightSlew(-turnPower);
+				}
 
 				lcd::print(1, "%.2f %.2f %.2f %s", turnPos, turnError, turnPower, strerror(errno));
 			}
 			else
 			{
-				P = CHASSIS_DISTANCE_KP;
-				I = CHASSIS_DISTANCE_KI;
-				D = CHASSIS_DISTANCE_KD;
-
+				if (movingIndividually)
+				{
+					P = CHASSIS_TURN_KP;
+					I = CHASSIS_TURN_KI;
+					D = CHASSIS_TURN_KD;
+				}
+				else
+				{
+					P = CHASSIS_DISTANCE_KP;
+					I = CHASSIS_DISTANCE_KI;
+					D = CHASSIS_DISTANCE_KD;
+				}
 				//LEFT CALCULATIONS
 				leftPos = _getLeftPos();
 				leftError = leftTarget - leftPos;
@@ -524,23 +555,38 @@ void chassisTask(void *parameter)
 				}
 
 				//SLANT
-				slantDifference = fabs(leftPos) - fabs(rightPos);
-				slantDerivative = slantDifference - lastSlantDifference;
-				slantDifference = lastSlantDifference;
-				slantModifier = slantDifference * CHASSIS_SLANT_KP + slantDerivative * CHASSIS_SLANT_KD;
-				if ((leftError + rightError) / 2 > 0)
+				if (!movingIndividually)
 				{
-					leftPower -= slantModifier;
-					rightPower += slantModifier;
+					slantDifference = fabs(leftPos) - fabs(rightPos);
+					slantDerivative = slantDifference - lastSlantDifference;
+					slantDifference = lastSlantDifference;
+					slantModifier = slantDifference * CHASSIS_SLANT_KP + slantDerivative * CHASSIS_SLANT_KD;
+					if ((leftError + rightError) / 2 > 0)
+					{
+						leftPower -= slantModifier;
+						rightPower += slantModifier;
+					}
+					else
+					{
+						leftPower += slantModifier;
+						rightPower -= slantModifier;
+					}
 				}
-				else
-				{
-					leftPower += slantModifier;
-					rightPower -= slantModifier;
-				}
-
 				//OUTPUT
 
+				if (leftPower > CHASSIS_MAX_SPEED)
+					leftPower = CHASSIS_MAX_SPEED;
+				else if (leftPower < -CHASSIS_MAX_SPEED)
+				{
+					leftPower = -CHASSIS_MAX_SPEED;
+				}
+
+				if (rightPower > CHASSIS_MAX_SPEED)
+					rightPower = CHASSIS_MAX_SPEED;
+				else if (rightPower < -CHASSIS_MAX_SPEED)
+				{
+					rightPower = -CHASSIS_MAX_SPEED;
+				}
 				_leftSlew(leftPower);
 				_rightSlew(rightPower);
 

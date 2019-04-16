@@ -3,14 +3,22 @@
 Motor intakeMotor(PORT_INTAKE, MOTOR_GEARSET_18, false, MOTOR_ENCODER_DEGREES);
 Motor indexerMotor(PORT_INDEXER, MOTOR_GEARSET_18, false, MOTOR_ENCODER_DEGREES);
 
-const int RAKE_DOWN = -190;
+const int RAKE_DOWN = -100;
 
 bool rakeDown = false;
 
-const int indexer_accel_step = 7;
+const int indexer_accel_step = 4;
 const int indexer_deccel_step = 7;
 
 static int indexerSlewSpeed = 0;
+
+double rakeError = 0;
+double rakeTarget = 0;
+double rake_kP = 1;
+double rakePower = 0;
+double rakePosition = 0;
+
+bool rakeIsGoingDown = false;
 
 void _indexerSlew(int target)
 {
@@ -38,6 +46,7 @@ void indexerPower(int power)
 
 void indexerIn()
 {
+	rakeIsGoingDown = false;
 	indexerMotor.move_velocity(200);
 }
 
@@ -47,38 +56,87 @@ void intakeWholeStop()
 	intakeMotor.move(0);
 }
 
+void intakeOut()
+{
+	intakeMotor.move_velocity(-200);
+}
+
 void moveRakeDown()
 {
 	indexerMotor.tare_position();
 	while (indexerMotor.get_position() > RAKE_DOWN)
 	{
-		indexerPower(-127);
+		_indexerSlew(-127);
 		pros::delay(20);
 	}
 	rakeDown = true;
 	indexerMotor.move_velocity(0);
+	indexerMotor.set_brake_mode(MOTOR_BRAKE_HOLD);
+}
+
+void moveRakeDownAuto()
+{
+	indexerMotor.tare_position();
+	rakeIsGoingDown = true;
+	indexerSlewSpeed = 0;
+	rakeTarget = RAKE_DOWN - 50;
+	rakeDown = true;
 }
 
 void moveRakeUp()
 {
-	indexerMotor.tare_position();
-	while (indexerMotor.get_position() < -RAKE_DOWN + 500)
+	if (!competition::is_autonomous)
 	{
-		indexerPower(127);
-		pros::delay(20);
+
+		indexerMotor.tare_position();
+		intakeMotor.move_relative(-70, 200);
+		while (indexerMotor.get_position() < -RAKE_DOWN + 500)
+		{
+			indexerPower(127);
+			pros::delay(20);
+		}
+		rakeDown = false;
 	}
-	rakeDown = false;
+	else
+	{
+		intakeMotor.move_relative(-70, 200);
+		rakeTarget = 0;
+		while (indexerMotor.get_position() < -RAKE_DOWN + 500)
+		{
+			indexerPower(127);
+			pros::delay(20);
+		}
+		rakeDown = false;
+	}
 }
 
 void intakeIn()
 {
 	intakeMotor.move_velocity(200);
 }
+
+void intakeInSlow()
+{
+	intakeMotor.move_velocity(100);
+}
 void intakeOp(void *parameter)
 {
 	while (true)
 	{
-		if (!competition::is_autonomous())
+		if (competition::is_autonomous())
+		{
+
+			lcd::print(3, "%.0f", rakeError);
+
+			rakePosition = indexerMotor.get_position();
+			rakeError = rakeTarget - rakePosition;
+			rakePower = rakeError * rake_kP;
+			if (rakeIsGoingDown)
+			{
+				_indexerSlew(rakePower - 150 * rakeDown);
+			}
+		}
+		else
 		{
 			lcd::print(3, "%.0f", indexerMotor.get_position());
 			//FRONT INTAKE and ADJUSTER
@@ -149,6 +207,7 @@ void intakeOp(void *parameter)
 				// indexerIn();
 			}
 		}
+
 		delay(20);
 	}
 }

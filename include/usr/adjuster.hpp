@@ -7,5 +7,6 @@ void adjusterStop();
 
 void doubleShot();
 void backDoubleShot();
+void backDoubleShotAuto();
 
 #endif
