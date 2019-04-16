@@ -133,7 +133,7 @@ void intakeOp(void *parameter)
 			rakePower = rakeError * rake_kP;
 			if (rakeIsGoingDown)
 			{
-				_indexerSlew(rakePower - 150 * rakeDown);
+				_indexerSlew(rakePower - 170 * rakeDown);
 			}
 		}
 		else

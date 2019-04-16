@@ -82,8 +82,10 @@ void redFront5Flags()
 	chassisWaitUntilSettled();
 	leftMoveIndividual(10);
 	intakeWholeStop();
-	moveForwardAsync(19.2);
+	setChassisMaxSpeed(80);
+	moveForwardAsync(18.75);
 	delay(1500);
+	setChassisMaxSpeed(127);
 	getBallsOffCapFrontFlagAuto();
 	intakeWholeStop();
 	delay(300);
