@@ -29,44 +29,9 @@ void getBallsOffCapFrontFlagAuto()
 	intakeWholeStop();
 }
 
-void redFront5FlagsBallOffPlatform()
-{
-	setFlywheelHigh();
-	turn(35);
-	moveForward(13);
-	moveRakeDownAuto();
-	delay(1300);
-	intakeIn();
-	moveBackward(18);
-	intakeWholeStop();
-	leftMoveIndividual(-8);
-	intakeIn();
-	turn(-80);
-	doubleShot();
-	intakeWholeStop();
-	delay(100);
-	intakeOut();
-	moveForward(5);
-	leftMoveIndividual(10);
-	intakeWholeStop();
-	moveForward(20); //17.75 //17.5
-	// getBallsOffCap();
-	getBallsOffCapFrontFlagAuto();
-	intakeWholeStop();
-	delay(300);
-	// intakeIn();
-	// moveForward(10);
-	// leftMoveIndividual(3);
-	doubleShot();
-	intakeWholeStop();
-	moveBackward(3);
-	leftMoveIndividual(-13);
-	moveRakeUp();
-	moveForward(38);
-}
 void redFront5Flags()
 {
-	//2nd full gray from table
+	//2nd full gray from table, 4th full tile from table
 	setFlywheelHigh();
 	intakeIn();
 	moveForward(35);
@@ -100,6 +65,34 @@ void redFront5Flags()
 
 	rightMoveIndividual(12.5);
 	moveForward(30);
+}
+
+void redFront3FlagsPark()
+{ //2nd full gray from table, 4th full tile from table
+	setFlywheelHigh();
+	intakeIn();
+	moveForward(35);
+	moveBackwardAsync(42);
+	delay(1400);
+	intakeWholeStop();
+	chassisWaitUntilSettled();
+	turn(-86);
+	doubleShot();
+	flywheelStop();
+	intakeWholeStop();
+	rightMoveIndividual(5);
+	intakeOut();
+	moveForward(7);
+	leftMoveIndividual(4.5);
+	moveForward(39);
+	intakeWholeStop();
+	leftMoveIndividual(-3.5);
+	moveBackwardAsync(67);
+	delay(2200);
+	turnAsync(107);
+	delay(1000);
+	setChassisMaxSpeed(75);
+	moveForward(40);
 }
 
 void redBack4Flags()

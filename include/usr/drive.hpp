@@ -14,6 +14,8 @@ void chassisWaitUntilSettled();
 
 void moveForward(double distance_inches);
 void moveForwardAsync(double distance_inches);
+void moveForwardNoCorrection(double distance_inches);
+
 void moveBackward(double distance_inches);
 void moveBackwardAsync(double distance_inches);
 

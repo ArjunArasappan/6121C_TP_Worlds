@@ -264,15 +264,15 @@ void rightWaitUntilSettled()
 void turnWaitUntilSettled()
 {
 	delay(300);
-	int counter;
+	int counter = 0;
 	while (_isTurning())
 	{
-		if (counter > 2000)
-			break;
-		counter += 20;
+		// if (counter > 2000)
+		// 	break;
+		// counter += 20;
 		delay(20);
 	}
-	pros::delay(500);
+	// pros::delay(200);
 }
 
 void chassisWaitUntilSettled()
@@ -365,9 +365,16 @@ void leftMoveIndividual(double distance_inches)
 
 void moveForward(double distance_inches)
 {
-
+	movingIndividually = true;
+	isTurning = false;
+	leftMoveAsync(distance_inches);
+	rightMoveAsync(distance_inches);
 	moveForwardAsync(distance_inches);
 	chassisWaitUntilSettled();
+}
+
+void moveForwardNoCorrection(double distance_inches)
+{
 }
 
 void moveBackwardAsync(double distance_inches)

@@ -13,7 +13,7 @@
  */
 void autonomous()
 {
-	redFront5Flags();
+	redFront3FlagsPark();
 
 	delay(5000);
 }

@@ -2,8 +2,8 @@
 #define _AUTOROUTINES_HPP_
 
 void redBack4Flags();
+void redFront3FlagsPark();
 
-void redFront5FlagsBallOffPlatform();
 void redFront5Flags();
 
 void getBallsOffCap();

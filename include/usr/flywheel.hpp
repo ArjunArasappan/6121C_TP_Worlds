@@ -6,6 +6,7 @@ void flywheelOp(void *);
 
 void setFlywheelBackMid();
 void setFlywheelHigh();
+void flywheelStop();
 
 void backWaitForFlywheelSettle();
 void flywheelPrintInfoToLCD();

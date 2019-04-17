@@ -235,6 +235,11 @@ void setFlywheelBackMid()
 	flywheelBackMid = true;
 }
 
+void flywheelStop()
+{
+	flywheelEnabled = false;
+}
+
 void setFlywheelHigh()
 {
 	flywheelEnabled = true;
