@@ -82,19 +82,19 @@ void redFront5Flags()
 	chassisWaitUntilSettled();
 	leftMoveIndividual(10);
 	intakeWholeStop();
-	setChassisMaxSpeed(80);
-	moveForwardAsync(18.75);
+	setChassisMaxSpeed(40);
+	moveForwardAsync(18); //18.75
 	delay(1500);
 	setChassisMaxSpeed(127);
 	getBallsOffCapFrontFlagAuto();
 	intakeWholeStop();
 	delay(300);
-	leftMoveIndividual(-1);
+	leftMoveIndividual(1);
 	doubleShot();
 	moveRakeUp();
 	intakeWholeStop();
 	moveBackward(12);
-	leftMoveIndividual(-10);
+	leftMoveIndividual(-11);
 	moveForward(46);
 }
 
@@ -110,60 +110,15 @@ void redBack4Flags()
 	delay(3000);
 	backDoubleShotAuto();
 	intakeWholeStop();
-
-	moveBackward(10);
-	intakeOut();
-	turn(108);
-	moveForward(20);
-	moveForward(5);
-	intakeWholeStop();
-	moveBackward(10);
-	leftMoveIndividual(-26);
-	moveForward(25);
+	moveBackward(13);
+	turn(-34);
+	moveForward(16);
 	moveRakeDownAuto();
+	intakeIn();
 	delay(1000);
-	intakeIn();
-	moveBackward(15);
-	turn(21);
-	intakeIn();
+	moveBackward(10);
+	turn(15);
 	indexerIn();
 	delay(500);
 	intakeWholeStop();
-
-	// turn(29);
-	// moveBackwardAsync(38);
-	// delay(2500);
-
-	// turn(39);
-	// moveForwardAsync(37);
-	// delay(2000);
-	// getBallsOffCap();
-	// turnAsync(15);
-	// delay(700);
-	// moveBackwardAsync(10);
-	// delay(700);
-	// turn(-88);
-	// moveForwardAsync(13);
-	// delay(800);
-	// backDoubleShotAuto();
-
-	// moveBackward(27);
-	// // delay(2000);
-	// // turn(52);
-	// leftMoveIndividual(14);
-	// moveForwardAsync(20);
-	// delay(1500);
-	// getBallsOffCap();
-	// turnAsync(15);
-	// delay(700);
-	// moveBackwardAsync(10);
-	// delay(700);
-	// turn(-84);
-	// moveForwardAsync(13);
-	// delay(800);
-	// backDoubleShotAuto();
-	// // turn(60);
-	// // moveForward(23.5);
-	// // turn(-75);
-	// // moveForward(36);
 }
