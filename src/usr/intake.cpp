@@ -7,8 +7,8 @@ const int RAKE_DOWN = -100;
 
 bool rakeDown = false;
 
-const int indexer_accel_step = 4;
-const int indexer_deccel_step = 7;
+const int indexer_accel_step = 256; //3
+const int indexer_deccel_step = 256;
 
 static int indexerSlewSpeed = 0;
 
@@ -17,8 +17,6 @@ double rakeTarget = 0;
 double rake_kP = 1;
 double rakePower = 0;
 double rakePosition = 0;
-
-bool rakeIsGoingDown = false;
 
 void _indexerSlew(int target)
 {
@@ -46,7 +44,7 @@ void indexerPower(int power)
 
 void indexerIn()
 {
-	rakeIsGoingDown = false;
+	rakeDown = false;
 	indexerMotor.move_velocity(200);
 }
 
@@ -76,37 +74,20 @@ void moveRakeDown()
 
 void moveRakeDownAuto()
 {
-	indexerMotor.tare_position();
-	rakeIsGoingDown = true;
-	indexerSlewSpeed = 0;
-	rakeTarget = RAKE_DOWN - 50;
 	rakeDown = true;
 }
 
 void moveRakeUp()
 {
-	if (!competition::is_autonomous)
+	rakeDown = false;
+	// intakeMotor.move_relative(-30, 50);
+	delay(500);
+	while (indexerMotor.get_position() < -RAKE_DOWN + 1500)
 	{
-
-		indexerMotor.tare_position();
-		intakeMotor.move_relative(-70, 200);
-		while (indexerMotor.get_position() < -RAKE_DOWN + 500)
-		{
-			indexerPower(127);
-			pros::delay(20);
-		}
-		rakeDown = false;
+		indexerPower(127);
+		pros::delay(20);
 	}
-	else
-	{
-		while (indexerMotor.get_position() < -RAKE_DOWN + 500)
-		{
-			indexerPower(127);
-			pros::delay(20);
-		}
-		rakeDown = false;
-		rakeIsGoingDown = false;
-	}
+	indexerPower(0);
 }
 
 void intakeIn()
@@ -127,17 +108,12 @@ void intakeOp(void *parameter)
 {
 	while (true)
 	{
+		lcd::print(3, "%.0f", indexerMotor.get_position());
 		if (competition::is_autonomous())
 		{
-			if (rakeIsGoingDown)
+			if (rakeDown)
 			{
-				lcd::print(3, "%.0f", rakeError);
-
-				rakePosition = indexerMotor.get_position();
-				rakeError = rakeTarget - rakePosition;
-				rakePower = rakeError * rake_kP;
-
-				_indexerSlew(rakePower - 170 * rakeDown);
+				indexerMotor.move(-50);
 			}
 		}
 		else
@@ -211,7 +187,6 @@ void intakeOp(void *parameter)
 				// indexerIn();
 			}
 		}
-
 		delay(20);
 	}
 }

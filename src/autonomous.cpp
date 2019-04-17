@@ -14,5 +14,6 @@
 void autonomous()
 {
 	redFront5Flags();
+
 	delay(5000);
 }
