@@ -8,7 +8,7 @@ void doubleShot()
 	adjusterMotor.tare_position();
 	indexerIn();
 	intakeIn();
-	delay(80); //70
+	delay(75); //70
 	adjusterUp();
 	delay(300);
 	adjusterMotor.move_absolute(0, 200);

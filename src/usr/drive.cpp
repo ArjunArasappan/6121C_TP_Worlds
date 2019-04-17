@@ -244,7 +244,7 @@ void leftWaitUntilSettled()
 		counter += 20;
 		delay(20);
 	}
-	pros::delay(250);
+	pros::delay(50); //250
 }
 
 void rightWaitUntilSettled()
@@ -258,7 +258,7 @@ void rightWaitUntilSettled()
 		counter += 20;
 		delay(20);
 	}
-	pros::delay(250);
+	pros::delay(50); //250
 }
 
 void turnWaitUntilSettled()

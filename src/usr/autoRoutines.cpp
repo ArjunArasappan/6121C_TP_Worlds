@@ -17,13 +17,15 @@ void getBallsOffCap()
 void getBallsOffCapFrontFlagAuto()
 {
 	moveRakeDown();
-	delay(600);
 	intakeIn();
 	setChassisMaxSpeed(40);
-	moveBackwardAsync(18); //17 for rake still under cap
-	delay(2500);
+	moveBackwardAsync(18);
+	delay(600);
 	setChassisMaxSpeed(127);
-	moveForward(13);
+	delay(600);
+	intakeInSlow();
+	moveForwardAsync(13);
+	delay(1000);
 	intakeWholeStop();
 }
 
@@ -69,10 +71,10 @@ void redFront5Flags()
 	intakeIn();
 	moveForward(35);
 	moveBackwardAsync(42);
-	delay(600);
-	intakeInSlow();
+	delay(900);
+	intakeWholeStop();
 	chassisWaitUntilSettled();
-	turn(-87);
+	turn(-87.0);
 	doubleShot();
 	moveForwardAsync(6);
 	intakeWholeStop();
@@ -81,20 +83,23 @@ void redFront5Flags()
 	chassisWaitUntilSettled();
 	leftMoveIndividual(10);
 	intakeWholeStop();
-	setChassisMaxSpeed(40);
 	moveForwardAsync(18);
-	delay(1500);
+	delay(600);
+	setChassisMaxSpeed(40);
+	delay(700);
 	setChassisMaxSpeed(127);
 	getBallsOffCapFrontFlagAuto();
 	intakeWholeStop();
 	delay(300);
-	leftMoveIndividual(1);
+	leftMoveIndividual(2);
 	doubleShot();
-	indexerIn();
 	intakeWholeStop();
+	indexerIn();
+
 	moveBackward(13);
-	leftMoveIndividual(-11);
-	moveForward(46);
+
+	rightMoveIndividual(12.5);
+	moveForward(30);
 }
 
 void redBack4Flags()
