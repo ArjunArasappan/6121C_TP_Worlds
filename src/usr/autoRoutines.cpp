@@ -102,30 +102,68 @@ void redBack4Flags()
 { //3rd red from flags
 	setFlywheelHigh();
 	intakeIn();
-	moveForward(38);
+	moveForward(34);
+	intakeInSlow();
 	moveBackward(9);
 	intakeWholeStop();
-	turn(-59); //-56
+	turn(-56);
 	delay(3000);
 	backDoubleShotAuto();
 	intakeWholeStop();
-	moveBackward(27);
+
+	moveBackward(10);
+	intakeOut();
+	turn(108);
+	moveForward(20);
+	moveForward(5);
+	intakeWholeStop();
+	moveBackward(10);
+	leftMoveIndividual(-26);
+	moveForward(25);
+	moveRakeDownAuto();
+	delay(1000);
+	intakeIn();
+	moveBackward(15);
+	turn(21);
+	intakeIn();
+	indexerIn();
+	delay(500);
+	intakeWholeStop();
+
+	// turn(29);
+	// moveBackwardAsync(38);
+	// delay(2500);
+
+	// turn(39);
+	// moveForwardAsync(37);
 	// delay(2000);
-	// turn(52);
-	leftMoveIndividual(14);
-	moveForwardAsync(20);
-	delay(1500);
-	getBallsOffCap();
-	turnAsync(15);
-	delay(700);
-	moveBackwardAsync(10);
-	delay(700);
-	turn(-84);
-	moveForwardAsync(13);
-	delay(800);
-	backDoubleShotAuto();
-	// turn(60);
-	// moveForward(23.5);
-	// turn(-75);
-	// moveForward(36);
+	// getBallsOffCap();
+	// turnAsync(15);
+	// delay(700);
+	// moveBackwardAsync(10);
+	// delay(700);
+	// turn(-88);
+	// moveForwardAsync(13);
+	// delay(800);
+	// backDoubleShotAuto();
+
+	// moveBackward(27);
+	// // delay(2000);
+	// // turn(52);
+	// leftMoveIndividual(14);
+	// moveForwardAsync(20);
+	// delay(1500);
+	// getBallsOffCap();
+	// turnAsync(15);
+	// delay(700);
+	// moveBackwardAsync(10);
+	// delay(700);
+	// turn(-84);
+	// moveForwardAsync(13);
+	// delay(800);
+	// backDoubleShotAuto();
+	// // turn(60);
+	// // moveForward(23.5);
+	// // turn(-75);
+	// // moveForward(36);
 }

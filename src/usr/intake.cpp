@@ -99,14 +99,13 @@ void moveRakeUp()
 	}
 	else
 	{
-		intakeMotor.move_relative(-70, 200);
-		rakeTarget = 0;
 		while (indexerMotor.get_position() < -RAKE_DOWN + 500)
 		{
 			indexerPower(127);
 			pros::delay(20);
 		}
 		rakeDown = false;
+		rakeIsGoingDown = false;
 	}
 }
 
@@ -119,20 +118,25 @@ void intakeInSlow()
 {
 	intakeMotor.move_velocity(100);
 }
+
+void intakeOutSlow()
+{
+	intakeMotor.move_velocity(-100);
+}
 void intakeOp(void *parameter)
 {
 	while (true)
 	{
 		if (competition::is_autonomous())
 		{
-
-			lcd::print(3, "%.0f", rakeError);
-
-			rakePosition = indexerMotor.get_position();
-			rakeError = rakeTarget - rakePosition;
-			rakePower = rakeError * rake_kP;
 			if (rakeIsGoingDown)
 			{
+				lcd::print(3, "%.0f", rakeError);
+
+				rakePosition = indexerMotor.get_position();
+				rakeError = rakeTarget - rakePosition;
+				rakePower = rakeError * rake_kP;
+
 				_indexerSlew(rakePower - 170 * rakeDown);
 			}
 		}
