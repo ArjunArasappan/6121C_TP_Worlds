@@ -5,9 +5,9 @@ void intakeOp(void *);
 
 void indexerIn();
 void intakeIn();
+void intakeStop();
 void intakeInSlow();
 void intakeOutSlow();
-
 void intakeOut();
 void intakeWholeStop();
 

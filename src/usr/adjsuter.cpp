@@ -10,7 +10,7 @@ void doubleShot()
 	intakeIn();
 	delay(75); //70
 	adjusterUp();
-	delay(300);
+	delay(300); //300
 	adjusterMotor.move_absolute(0, 200);
 	delay(60);
 	// intakeWholeStop();
@@ -23,13 +23,13 @@ void backDoubleShot()
 	intakeIn();
 	delay(160);
 	intakeWholeStop();
-	setFlywheelBackMid();
-	delay(700);
+	// setFlywheelBackMid();
+	delay(550); //700
 	indexerIn();
 	intakeIn();
 	delay(300);
 	intakeWholeStop();
-	setFlywheelHigh();
+	// setFlywheelHigh();
 }
 
 void backDoubleShotAuto()

@@ -267,9 +267,9 @@ void turnWaitUntilSettled()
 	int counter = 0;
 	while (_isTurning())
 	{
-		// if (counter > 2000)
-		// 	break;
-		// counter += 20;
+		if (counter > 2000)
+			break;
+		counter += 20;
 		delay(20);
 	}
 	// pros::delay(200);

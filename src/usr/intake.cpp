@@ -48,6 +48,11 @@ void indexerIn()
 	indexerMotor.move_velocity(200);
 }
 
+void intakeStop()
+{
+	intakeMotor.move(0);
+}
+
 void intakeWholeStop()
 {
 	indexerMotor.move(0);
@@ -80,8 +85,6 @@ void moveRakeDownAuto()
 void moveRakeUp()
 {
 	rakeDown = false;
-	// intakeMotor.move_relative(-30, 50);
-	delay(500);
 	while (indexerMotor.get_position() < -RAKE_DOWN + 1500)
 	{
 		indexerPower(127);

@@ -167,8 +167,7 @@ void flywheelOp(void *parameter)
 			else if (master.get_digital(DIGITAL_A))
 			{
 				flywheelEnabled = true;
-				flywheelBackMid = false;
-				FwVelocitySet(&flywheel, FLYWHEEL_BACK_MID);
+				FwVelocitySet(&flywheel, 610);
 			}
 
 			else if (master.get_digital(DIGITAL_B))
