@@ -125,10 +125,10 @@ void autonomousChooserExecuteAuto()
 			blueFront3FlagsPark();
 			break;
 		case 3:
-
+			blueBackSnipe(false);
 			break;
 		case 4:
-
+			blueBackSnipe(true);
 			break;
 		case 5:
 

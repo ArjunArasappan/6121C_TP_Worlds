@@ -36,9 +36,10 @@ void blueFront5Flags()
 {
 	//2nd full blue from table, 4th full tile from table
 	setFlywheelHigh();
+	moveForwardAsync(35);
+	delay(1800);
 	intakeIn();
-	moveForward(35);
-	moveBackwardAsync(39.5);
+	moveBackwardAsync(39);
 	delay(900);
 	intakeWholeStop();
 	chassisWaitUntilSettled();
@@ -66,7 +67,7 @@ void blueFront5Flags()
 	moveBackwardAsync(16);
 	delay(100);
 	intakeOut();
-	chassisWaitUntilSettled();
+	delay(600);
 	leftMoveIndividual(11);
 	moveForward(40);
 }
@@ -75,8 +76,8 @@ void redFront5Flags()
 {
 	//2nd full gray from table, 4th full tile from table
 	setFlywheelHigh();
-	intakeIn();
 	moveForward(35);
+	intakeIn();
 	moveBackwardAsync(42);
 	delay(900);
 	intakeWholeStop();
@@ -112,8 +113,8 @@ void redFront5Flags()
 void blueFront3FlagsPark()
 { //2nd full blue from table, 4th full tile from table
 	setFlywheelHigh();
-	intakeIn();
 	moveForward(35);
+	intakeIn();
 	moveBackwardAsync(39.5);
 	delay(900);
 	intakeWholeStop();
@@ -142,8 +143,8 @@ void blueFront3FlagsPark()
 void redFront3FlagsPark()
 { //2nd full gray from table, 4th full tile from table
 	setFlywheelHigh();
-	intakeIn();
 	moveForward(35);
+	intakeIn();
 	moveBackwardAsync(42);
 	delay(900);
 	intakeWholeStop();
@@ -170,15 +171,21 @@ void redFront3FlagsPark()
 }
 
 void redBackSnipe(bool park)
-{ //3rd red from flags
+{ //2nd full red from flags, 4th full tab from flags
 	setFlywheelHigh();
+	moveForward(35);
 	intakeIn();
-	moveForward(34);
-	intakeInSlow();
-	moveBackward(9);
+	moveBackward(11);
 	intakeWholeStop();
-	turn(-58);
-	delay(7000);
+	turn(-56);
+	if (park)
+	{
+		delay(6500);
+	}
+	else
+	{
+		delay(3000);
+	}
 	backDoubleShotAuto();
 	intakeWholeStop();
 	flywheelStop();
@@ -188,16 +195,21 @@ void redBackSnipe(bool park)
 		delay(100);
 		setChassisMaxSpeed(75);
 		moveForward(31);
+		return;
 	}
+	moveBackward(10);
+	turn(100);
+	intakeOut();
+	moveForward(22);
+	moveForward(7);
 }
 
 void blueBackSnipe(bool park)
 
 { //2nd full gray from flags, 4th full tab from flags
 	setFlywheelHigh();
-	intakeIn();
 	moveForward(35);
-	intakeInSlow();
+	intakeIn();
 	moveBackward(11);
 	intakeWholeStop();
 	turn(56);
