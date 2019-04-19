@@ -13,7 +13,8 @@ void initialize()
 	Task flywheel_op(flywheelOp);
 	Task intake_op(intakeOp);
 
-	lcd::initialize();
+	// lcd::initialize();
+	autonomousChooserInit();
 }
 
 /**

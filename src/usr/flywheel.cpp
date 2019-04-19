@@ -6,6 +6,7 @@ const float flywheelGain = 0.01;
 
 const int FLYWHEEL_HIGH = 595;
 const int FLYWHEEL_BACK_MID = 547;
+const int FLYWHEEL_MAX = 610;
 
 bool flywheelEnabled = false;
 
@@ -167,7 +168,7 @@ void flywheelOp(void *parameter)
 			else if (master.get_digital(DIGITAL_A))
 			{
 				flywheelEnabled = true;
-				FwVelocitySet(&flywheel, 610);
+				FwVelocitySet(&flywheel, FLYWHEEL_MAX);
 			}
 
 			else if (master.get_digital(DIGITAL_B))
@@ -244,6 +245,13 @@ void setFlywheelHigh()
 	flywheelEnabled = true;
 	flywheelBackMid = false;
 	FwVelocitySet(&flywheel, FLYWHEEL_HIGH);
+}
+
+void setFlywheelMax()
+{
+	flywheelEnabled = true;
+	flywheelBackMid = false;
+	FwVelocitySet(&flywheel, FLYWHEEL_MAX);
 }
 
 void backWaitForFlywheelSettle()

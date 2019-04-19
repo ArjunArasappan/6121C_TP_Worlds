@@ -3,6 +3,8 @@
 
 void redBackSnipe(bool park);
 
+void blueBackSnipe(bool park);
+
 void redFront3FlagsPark();
 void redFront5Flags();
 

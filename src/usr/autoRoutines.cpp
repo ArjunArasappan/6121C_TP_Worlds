@@ -124,9 +124,9 @@ void blueFront3FlagsPark()
 	intakeWholeStop();
 	leftMoveIndividual(7);
 	intakeOut();
-	moveForward(14);
+	moveForward(15);
 	rightMoveIndividual(4.5);
-	moveForward(39);
+	moveForward(37);
 	intakeWholeStop();
 	rightMoveIndividual(-2.5);
 	moveBackwardAsync(74);
@@ -189,4 +189,42 @@ void redBackSnipe(bool park)
 		setChassisMaxSpeed(75);
 		moveForward(31);
 	}
+}
+
+void blueBackSnipe(bool park)
+
+{ //2nd full gray from flags, 4th full tab from flags
+	setFlywheelHigh();
+	intakeIn();
+	moveForward(35);
+	intakeInSlow();
+	moveBackward(11);
+	intakeWholeStop();
+	turn(56);
+	if (park)
+	{
+		delay(6500);
+	}
+	else
+	{
+		delay(3000);
+	}
+
+	backDoubleShotAuto();
+	intakeWholeStop();
+	flywheelStop();
+	if (park)
+	{
+		moveRakeDown();
+		leftMoveIndividual(15);
+		delay(100);
+		setChassisMaxSpeed(75);
+		moveForward(36);
+		return;
+	}
+	moveBackward(10);
+	turn(-100);
+	intakeOut();
+	moveForward(22);
+	moveForward(7);
 }

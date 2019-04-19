@@ -13,7 +13,8 @@
  */
 void autonomous()
 {
-	blueFront5Flags();
+	blueBackSnipe(false);
+	// autonomousChooserExecuteAuto();
 
 	delay(5000);
 }
