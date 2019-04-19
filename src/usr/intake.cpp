@@ -3,7 +3,7 @@
 Motor intakeMotor(PORT_INTAKE, MOTOR_GEARSET_18, false, MOTOR_ENCODER_DEGREES);
 Motor indexerMotor(PORT_INDEXER, MOTOR_GEARSET_18, false, MOTOR_ENCODER_DEGREES);
 
-const int RAKE_DOWN = -100;
+const int RAKE_DOWN = -140;
 
 bool rakeDown = false;
 
@@ -85,7 +85,7 @@ void moveRakeDownAuto()
 void moveRakeUp()
 {
 	rakeDown = false;
-	while (indexerMotor.get_position() < -RAKE_DOWN + 1500)
+	while (indexerMotor.get_position() < -RAKE_DOWN + 1000)
 	{
 		indexerPower(127);
 		pros::delay(20);

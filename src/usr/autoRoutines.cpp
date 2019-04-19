@@ -44,7 +44,7 @@ void blueFront5Flags()
 	chassisWaitUntilSettled();
 	turn(86);
 	doubleShot();
-	moveForwardAsync(7); //6
+	moveForwardAsync(8); //7
 	intakeWholeStop();
 	delay(100);
 	intakeOut();
@@ -68,7 +68,7 @@ void blueFront5Flags()
 	intakeOut();
 	chassisWaitUntilSettled();
 	leftMoveIndividual(11);
-	moveForward(36);
+	moveForward(40);
 }
 
 void redFront5Flags()
