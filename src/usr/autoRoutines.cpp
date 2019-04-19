@@ -109,6 +109,36 @@ void redFront5Flags()
 	moveForward(30);
 }
 
+void blueFront3FlagsPark()
+{ //2nd full blue from table, 4th full tile from table
+	setFlywheelHigh();
+	intakeIn();
+	moveForward(35);
+	moveBackwardAsync(39.5);
+	delay(900);
+	intakeWholeStop();
+	chassisWaitUntilSettled();
+	turn(86);
+	doubleShot();
+	flywheelStop();
+	intakeWholeStop();
+	leftMoveIndividual(7);
+	intakeOut();
+	moveForward(14);
+	rightMoveIndividual(4.5);
+	moveForward(39);
+	intakeWholeStop();
+	rightMoveIndividual(-2.5);
+	moveBackwardAsync(74);
+	delay(2200);
+	turnAsync(-101);
+	moveRakeDown();
+	delay(1000);
+	setChassisMaxSpeed(75);
+	moveForward(40);
+	indexerIn();
+}
+
 void redFront3FlagsPark()
 { //2nd full gray from table, 4th full tile from table
 	setFlywheelHigh();
