@@ -50,7 +50,9 @@ static double difference = 0;
 static int leftSpeed = 0;
 static int rightSpeed = 0;
 
-const int CHASSIS_ACCEL_STEP = 4;
+const int DEFAULT_CHASSIS_ACCEL_STEP = 4;
+
+int chassisAccel = DEFAULT_CHASSIS_ACCEL_STEP;
 const int CHASSIS_DECEL_STEP = 256; //no decel slew
 
 const int CHASSIS_INTEGRAL_ERROR_BOUND = 300;
@@ -87,6 +89,11 @@ static double slantDifference = 0;
 double slantModifier = 0;
 double lastSlantDifference = 0;
 double slantDerivative = 0;
+
+void setChassisAccelStep(int step)
+{
+	chassisAccel = step;
+}
 
 void setChassisMaxSpeed(double speed)
 {
@@ -182,7 +189,7 @@ void _leftSlew(double leftTarget)
 	int step;
 
 	if (abs(leftSpeed) < abs(leftTarget))
-		step = CHASSIS_ACCEL_STEP;
+		step = chassisAccel;
 	else
 		step = CHASSIS_DECEL_STEP;
 
@@ -201,7 +208,7 @@ void _rightSlew(double rightTarget)
 	int step;
 
 	if (abs(rightSpeed) < abs(rightTarget))
-		step = CHASSIS_ACCEL_STEP;
+		step = chassisAccel;
 	else
 		step = CHASSIS_DECEL_STEP;
 
@@ -244,7 +251,6 @@ void leftWaitUntilSettled()
 		counter += 20;
 		delay(20);
 	}
-	pros::delay(50); //250
 }
 
 void rightWaitUntilSettled()
@@ -258,7 +264,6 @@ void rightWaitUntilSettled()
 		counter += 20;
 		delay(20);
 	}
-	pros::delay(50); //250
 }
 
 void turnWaitUntilSettled()
@@ -272,7 +277,6 @@ void turnWaitUntilSettled()
 		counter += 20;
 		delay(20);
 	}
-	// pros::delay(200);
 }
 
 void chassisWaitUntilSettled()

@@ -20,30 +20,27 @@ void getBallsOffCapFrontFlagAuto()
 	delay(300);
 	intakeIn();
 	setChassisMaxSpeed(40);
+	setChassisAccelStep(256);
 	moveBackwardAsync(18);
-	delay(600);
+	delay(700);
 	setChassisMaxSpeed(127);
-	intakeStop();
-	delay(200);
-	intakeIn();
-	delay(400);
-	moveForwardAsync(13);
-	delay(1000);
-	intakeInSlow();
+	delay(600);
+	setChassisAccelStep(4);
+	moveForward(16);
 }
 
 void blueFront5Flags()
 {
 	//2nd full blue from table, 4th full tile from table
 	setFlywheelHigh();
-	moveForwardAsync(35);
+	moveForwardAsync(34);
 	delay(1800);
 	intakeIn();
 	moveBackwardAsync(39);
 	delay(900);
 	intakeWholeStop();
 	chassisWaitUntilSettled();
-	turn(86);
+	turn(88);
 	doubleShot();
 	moveForwardAsync(8); //7
 	intakeWholeStop();
@@ -52,7 +49,7 @@ void blueFront5Flags()
 	chassisWaitUntilSettled();
 	rightMoveIndividual(10);
 	intakeWholeStop();
-	moveForwardAsync(17.5);
+	moveForwardAsync(16);
 	delay(600);
 	setChassisMaxSpeed(40);
 	delay(700);
@@ -64,11 +61,11 @@ void blueFront5Flags()
 	doubleShot();
 	intakeWholeStop();
 	indexerIn();
-	moveBackwardAsync(16);
+	moveBackwardAsync(22);
 	delay(100);
 	intakeOut();
-	delay(600);
-	leftMoveIndividual(11);
+	chassisWaitUntilSettled();
+	leftMoveIndividual(10);
 	moveForward(40);
 }
 
@@ -82,32 +79,34 @@ void redFront5Flags()
 	delay(900);
 	intakeWholeStop();
 	chassisWaitUntilSettled();
-	turn(-87.0);
-	doubleShot();
+	turn(-87);
 	moveForwardAsync(6);
+	doubleShot();
 	intakeWholeStop();
 	delay(100);
 	intakeOut();
 	chassisWaitUntilSettled();
 	leftMoveIndividual(10);
 	intakeWholeStop();
-	moveForwardAsync(18);
+	moveForwardAsync(18.7);
 	delay(600);
 	setChassisMaxSpeed(40);
-	delay(700);
+	delay(600);
 	setChassisMaxSpeed(127);
 	getBallsOffCapFrontFlagAuto();
-	intakeWholeStop();
-	delay(300);
-	leftMoveIndividual(2);
+	leftMoveIndividual(4);
 	doubleShot();
 	intakeWholeStop();
 	indexerIn();
 
-	moveBackward(16);
-
-	rightMoveIndividual(12);
+	moveBackward(13);
+	intakeWholeStop();
+	rightMoveIndividual(14);
 	moveForward(30);
+	// moveBackward(16);
+
+	// rightMoveIndividual(12);
+	// moveForward(30);
 }
 
 void blueFront3FlagsPark()

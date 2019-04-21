@@ -6,6 +6,7 @@ void chassisTask(void *);
 void setChassisLock(bool lock);
 
 void setChassisMaxSpeed(double speed);
+void setChassisAccelStep(int step);
 
 void leftWaitUntilSettled();
 void rightWaitUntilSettled();

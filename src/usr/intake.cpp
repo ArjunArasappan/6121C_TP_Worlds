@@ -45,7 +45,7 @@ void indexerPower(int power)
 void indexerIn()
 {
 	rakeDown = false;
-	indexerMotor.move_velocity(200);
+	indexerMotor.move(127);
 }
 
 void intakeStop()
@@ -95,12 +95,17 @@ void moveRakeUp()
 
 void intakeIn()
 {
-	intakeMotor.move_velocity(200);
+	intakeMotor.move(127);
 }
 
 void intakeInSlow()
 {
 	intakeMotor.move_velocity(100);
+}
+
+void intakeInMedium()
+{
+	intakeMotor.move_velocity(120);
 }
 
 void intakeOutSlow()
