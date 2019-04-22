@@ -25,48 +25,45 @@ void getBallsOffCapFrontFlagAuto()
 	delay(700);
 	setChassisMaxSpeed(127);
 	delay(600);
-	setChassisAccelStep(4);
+
 	moveForward(16);
+	setChassisAccelStep(4);
 }
 
 void blueFront5Flags()
 {
-	//2nd full blue from table, 4th full tile from table
+	//2nd full gray from table, 4th full tile from table
 	setFlywheelHigh();
-	moveForwardAsync(34);
-	delay(1800);
+	moveForward(35);
 	intakeIn();
-	moveBackwardAsync(39);
-	delay(900);
+	moveBackwardAsync(42);
+	delay(1100);
 	intakeWholeStop();
 	chassisWaitUntilSettled();
-	turn(88);
+	turn(85.5);
+	moveForwardAsync(6);
 	doubleShot();
-	moveForwardAsync(8); //7
 	intakeWholeStop();
 	delay(100);
 	intakeOut();
 	chassisWaitUntilSettled();
 	rightMoveIndividual(10);
 	intakeWholeStop();
-	moveForwardAsync(16);
+	moveForwardAsync(18.7);
 	delay(600);
 	setChassisMaxSpeed(40);
-	delay(700);
+	delay(600);
 	setChassisMaxSpeed(127);
 	getBallsOffCapFrontFlagAuto();
-	intakeWholeStop();
-	delay(300);
-	rightMoveIndividual(2);
+	rightMoveIndividual(3.25);
 	doubleShot();
 	intakeWholeStop();
 	indexerIn();
-	moveBackwardAsync(22);
-	delay(100);
-	intakeOut();
-	chassisWaitUntilSettled();
-	leftMoveIndividual(10);
-	moveForward(40);
+
+	moveBackward(17);
+	intakeWholeStop();
+	leftMoveIndividual(13);
+	moveForward(35);
 }
 
 void redFront5Flags()

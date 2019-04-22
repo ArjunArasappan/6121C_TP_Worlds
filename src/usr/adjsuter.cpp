@@ -10,7 +10,7 @@ void doubleShot()
 	intakeIn();
 	delay(40);
 	adjusterUp();
-	delay(230);
+	delay(280);
 	adjusterMotor.move_absolute(0, 200);
 	delay(60);
 	// intakeWholeStop();
