@@ -26,7 +26,7 @@ void getBallsOffCapFrontFlagAuto()
 	setChassisMaxSpeed(127);
 	delay(600);
 
-	moveForward(16);
+	moveForward(13);
 	setChassisAccelStep(4);
 }
 
@@ -55,15 +55,15 @@ void blueFront5Flags()
 	delay(600);
 	setChassisMaxSpeed(127);
 	getBallsOffCapFrontFlagAuto();
-	rightMoveIndividual(3.25);
+	rightMoveIndividual(1); //3.25
 	doubleShot();
 	intakeWholeStop();
 	indexerIn();
 
-	moveBackward(17);
+	moveBackward(13);
 	intakeWholeStop();
-	leftMoveIndividual(13);
-	moveForward(35);
+	leftMoveIndividual(12); //13
+	moveForward(37);
 }
 
 void redFront5Flags()
@@ -91,15 +91,15 @@ void redFront5Flags()
 	delay(600);
 	setChassisMaxSpeed(127);
 	getBallsOffCapFrontFlagAuto();
-	leftMoveIndividual(4);
+	leftMoveIndividual(1); //4
 	doubleShot();
 	intakeWholeStop();
 	indexerIn();
 
 	moveBackward(13);
 	intakeWholeStop();
-	rightMoveIndividual(14);
-	moveForward(30);
+	rightMoveIndividual(12);
+	moveForward(36);
 	// moveBackward(16);
 
 	// rightMoveIndividual(12);
@@ -119,14 +119,14 @@ void blueFront3FlagsPark()
 	doubleShot();
 	flywheelStop();
 	intakeWholeStop();
-	leftMoveIndividual(7);
+	leftMoveIndividual(2);
 	intakeOut();
-	moveForward(15);
-	rightMoveIndividual(4.5);
-	moveForward(37);
+	moveForward(19);
+	rightMoveIndividual(3.5);
+	moveForward(32);
 	intakeWholeStop();
 	rightMoveIndividual(-2.5);
-	moveBackwardAsync(74);
+	moveBackwardAsync(72);
 	delay(2200);
 	turnAsync(-101);
 	moveRakeDown();
@@ -149,11 +149,11 @@ void redFront3FlagsPark()
 	doubleShot();
 	flywheelStop();
 	intakeWholeStop();
-	rightMoveIndividual(5);
+	rightMoveIndividual(13);
 	intakeOut();
-	moveForward(7);
-	leftMoveIndividual(4.5);
-	moveForward(39);
+	moveForward(14);
+	leftMoveIndividual(4);
+	moveForward(32);
 	intakeWholeStop();
 	leftMoveIndividual(-3.5);
 	moveBackwardAsync(67);
@@ -173,14 +173,14 @@ void redBackSnipe(bool park)
 	intakeIn();
 	moveBackward(11);
 	intakeWholeStop();
-	turn(-56);
+	turn(-57.5); //56
 	if (park)
 	{
 		delay(6500);
 	}
 	else
 	{
-		delay(3000);
+		delay(5000);
 	}
 	backDoubleShotAuto();
 	intakeWholeStop();
@@ -208,16 +208,15 @@ void blueBackSnipe(bool park)
 	intakeIn();
 	moveBackward(11);
 	intakeWholeStop();
-	turn(56);
+	turn(57); //56
 	if (park)
 	{
 		delay(6500);
 	}
 	else
 	{
-		delay(3000);
+		delay(5000);
 	}
-
 	backDoubleShotAuto();
 	intakeWholeStop();
 	flywheelStop();
@@ -227,7 +226,7 @@ void blueBackSnipe(bool park)
 		leftMoveIndividual(15);
 		delay(100);
 		setChassisMaxSpeed(75);
-		moveForward(36);
+		moveForward(34);
 		return;
 	}
 	moveBackward(10);

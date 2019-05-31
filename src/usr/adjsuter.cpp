@@ -20,29 +20,27 @@ void doubleShot()
 void backDoubleShot()
 {
 	indexerIn();
-	intakeIn();
 	delay(160);
 	intakeWholeStop();
-	// setFlywheelBackMid();
-	delay(550); //700
+	intakeMove(-130);
+	delay(550);
 	indexerIn();
 	intakeIn();
 	delay(300);
 	intakeWholeStop();
-	// setFlywheelHigh();
 }
 
 void backDoubleShotAuto()
 {
 	indexerIn();
-	intakeIn();
-	delay(100);
+	delay(85);
 	intakeWholeStop();
-	setFlywheelBackMid();
-	delay(700);
+	intakeMove(-130);
+	// setFlywheelBackMid();
+	delay(490);
 	indexerIn();
 	intakeIn();
-	delay(500);
+	delay(800);
 	intakeWholeStop();
 	setFlywheelHigh();
 }

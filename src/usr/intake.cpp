@@ -48,6 +48,11 @@ void indexerIn()
 	indexerMotor.move(127);
 }
 
+void intakeMove(double target)
+{
+	intakeMotor.move_relative(target / 4, 60);
+}
+
 void intakeStop()
 {
 	intakeMotor.move(0);
